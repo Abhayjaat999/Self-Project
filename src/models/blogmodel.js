@@ -6,7 +6,7 @@ const BlogSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-<<<<<<< HEAD
+
     body:  {
         type:String,
         required:true
@@ -26,7 +26,7 @@ const BlogSchema = new mongoose.Schema({
 },
 isDeleted: {type:Boolean, default: false},
 isPublished: {type:Boolean, default: false},
-=======
+
     body: {
         type: String,
         required: true
@@ -48,6 +48,6 @@ isPublished: {type:Boolean, default: false},
     },
     isDeleted: { type: Boolean, default: false },
     isPublished: { type: Boolean, default: false },
->>>>>>> e917558cb7f3d6ecb72c67adf0bf2d2b41049860
+
 }, { timestamps: true });
 module.exports = mongoose.model('Blog', BlogSchema)
