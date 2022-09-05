@@ -1,5 +1,5 @@
-// const blogmodel = require('../models/blogmodel')
-// const authormodel = require('../controllers/authorcontroller')
+const blogmodel = require('../models/blogmodel')
+const authormodel = require('../controllers/authorcontroller')
 var ObjectId = require('mongoose').Types.ObjectId
 
 const createblogdocument = async function (req, res) {
