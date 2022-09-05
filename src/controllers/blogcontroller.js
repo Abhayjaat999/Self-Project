@@ -18,5 +18,19 @@ const createblogdocument = async function (req, res) {
         res.status(500).send(error.message)
     }
 }
+const getallBlogs = async function (req, res) {
+    try {
+        let data = await blogmodel.find({ isDelete: false, published: true })
+        res.status(200).send({ status: true, msg: data })
+    }
+    catch (err) {
+        res.status(404).send({
+            status: false,
+            msg: err.message
+        })
+    }
+}
+module.exports.getallBlogs = getallBlogs
+
 
 module.exports.createblogdocument = createblogdocument
