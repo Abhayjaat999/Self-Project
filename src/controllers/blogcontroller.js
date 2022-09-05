@@ -75,20 +75,26 @@ const getallBlogs = async function (req, res) {
         let filterbycategory = req.query.catagory
         let filterbytags = req.query.tags
         let filterbysubcategory = req.query.subcategory
+
         if (filterbyid) {
+            if (!ObjectId.isValid(filterbyid)) return res.send({ status: false, msg: "object id is not valid" })
             let databyid = await blogmodel.find({ isDelete: false } && { published: true } && { authorId: filterbyid })
+            if (databyid == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databyid })
         }
         if (filterbycategory) {
             let databycategory = await blogmodel.find({ isDelete: false } && { published: true } && { category: filterbycategory })
+            if (!databycategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databycategory })
         }
         if (filterbytags) {
             let databytags = await blogmodel.find({ isDelete: false } && { published: true } && { tags: filterbytags })
+            if (!databytags == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databytags })
         }
         if (filterbysubcategory) {
             let databysubcategory = await blogmodel.find({ isDelete: false } && { published: true } && { subcategory: filterbysubcategory })
+            if (!databysubcategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databysubcategory })
         }
 
