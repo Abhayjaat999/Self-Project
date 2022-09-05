@@ -16,12 +16,13 @@ const BlogSchema = new mongoose.Schema({
     required:true
 },
    tags: [String] ,
+   
    category: {type:String, 
     required:true, 
     enum: ["technology", "entertainment", "life style", "food"," fashion"],
    },
    subcategory: {type:[String], 
-    enum:["technology"-["web development","mobile development","AI","ML", "etc"]] 
+    enum:["web development","mobile development","AI","ML",] 
 },
 isDeleted: {type:Boolean, default: false},
 isPublished: {type:Boolean, default: false},
