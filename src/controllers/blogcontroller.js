@@ -5,7 +5,7 @@ var ObjectId = require('mongoose').Types.ObjectId
 const createblogdocument = async function (req, res) {
     try {
         const createblog = req.body
-        const authorid = await authormodel.findbyid(createblog.authorId)
+        const authorid = await authormodel.findById(createblog.authorId)
         const validateid = ObjectId.isValid(createblog.authorId)
         if (!authorid) res.send("authorid is not Present ")
         if (!validateid) res.send("Auther id is not valid")
