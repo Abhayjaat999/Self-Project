@@ -115,6 +115,7 @@ const getallBlogs = async function (req, res) {
 }
 
 const deleteBlogid = async function (req, res){
+<<<<<<< HEAD
     let id = req.params.blogId;
     let Blog = await blogmodel.findOne({ _id: id });
     if (!Blog) {
@@ -126,8 +127,34 @@ const deleteBlogid = async function (req, res){
           { isDeleted: true, deletedAt: Date() },
           { new: true }
         );
+=======
+    
+   try {
+     let id = req.params.blogId;
+     let Blog = await blogmodel.findOne({ _id: id });
+     if (!Blog) {
+         return res.status(400).send({ status: false, msg: "No such blog found" });
+       }
+       
+       if (Blog.isDeleted == false) {
+         let Update = await blogmodel.findOneAndUpdate(
+           { _id: id },
+           { isDeleted: true, deletedAt: Date() },
+           { new: true }
+         );
+         return res.status(400).send({ status: true, msg: Update });
+
+   } 
+}
+   catch (err) {
+    res.status(404).send({
+        status: false,
+        msg: err.message
+    })
+>>>>>>> 899f20f82578c31c66ff6c7efc6b0d9d8a2bda00
 }
 }
+    
 
 
 
@@ -137,4 +164,9 @@ const deleteBlogid = async function (req, res){
 module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
+<<<<<<< HEAD
 module.exports.createblog = createblog
+=======
+module.exports.createblog = createblog
+module.exports.deleteBlogid = deleteBlogid
+>>>>>>> 899f20f82578c31c66ff6c7efc6b0d9d8a2bda00
