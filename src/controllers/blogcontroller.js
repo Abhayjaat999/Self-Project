@@ -50,16 +50,24 @@ const isvalidbody = (val) => {
 
 const createblogdocument = async function (req, res) {
     try {
-        const { title, body, authorId, tags, catagory, subcatagory, isDeleted, isPublished } = req.body
+
+        const createblog = req.body
+        const authorid = await authormodel.findById(createblog.authorId)
+        const validateid = ObjectId.isValid(createblog.authorId)
+        if (!authorid) res.send("authorid is not Present ")
+        if (!validateid) res.send("Auther id is not valid")
+        
+      const { title, body, authorId, tags, catagory, subcatagory, isDeleted, isPublished } = req.body
 
         if (!isvalidbody(req.body)) return res.status(400).send({ status: false, msg: "Please provide details" })
 
         if (!isValid(authorId)) return res.status(400).send({ status: false, msg: "author id is required" })
 
         if (!ObjectId.isValid(authorId)) return res.status(400).send({ status: false, msg: "Auther id is not valid" })
-        const authorid = await authormodel.findById(authorId)
+       
         if (!authorId) res.status(404).send("authorid is not Present ")
         const createbody = await blogmodel.create(req.body)
+
 
         res.status(201).send({
             status: true,
@@ -122,6 +130,7 @@ const getallBlogs = async function (req, res) {
     }
 }
 
+
 const deleteBlogParam = async function (req, res) {
    
     // const { title, body, authorId, tags, catagory, subcatagory, isDeleted, isPublished } = req.body
@@ -179,4 +188,43 @@ module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
 module.exports.deleteBlogParam = deleteBlogParam
+
+
+const deleteBlogid = async function (req, res){
+    
+   try {
+     let id = req.params.blogId;
+     let Blog = await blogmodel.findOne({ _id: id });
+     if (!Blog) {
+         return res.status(400).send({ status: false, msg: "No such blog found" });
+       }
+       
+       if (Blog.isDeleted == false) {
+         let Update = await blogmodel.findOneAndUpdate(
+           { _id: id },
+           { isDeleted: true, deletedAt: Date() },
+           { new: true }
+         );
+         return res.status(400).send({ status: true, msg: Update });
+
+   } 
+}
+   catch (err) {
+    res.status(404).send({
+        status: false,
+        msg: err.message
+    })
+}
+}
+    
+
+
+
+
+
+module.exports.getallBlogs = getallBlogs
+module.exports.createblogdocument = createblogdocument
+module.exports.updateblog = updateblog
+module.exports.createblog = createblog
+module.exports.deleteBlogid = deleteBlogid
 

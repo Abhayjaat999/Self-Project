@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId
-const mixed = mongoose.Schema.Types.Mixed
+
 const BlogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
     },
-    body:  {
+ body:  {
         type:String,
         required:true
  },
@@ -16,13 +16,14 @@ const BlogSchema = new mongoose.Schema({
     required:true
 },
    tags: [String] ,
+
    category: {type:String, 
     required:true, 
     enum: ["technology", "entertainment", "life style", "food"," fashion"],
    },
     subcategory: {type:[String], 
     enum:["web development","mobile development","AI","ML"] 
-},
+    },
 isDeleted: {type:Boolean, default: false},
 isPublished: {type:Boolean, default: false},
 PublishedAt : String
