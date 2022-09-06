@@ -3,16 +3,19 @@ const authormodel = require("../models/authormodel")
 const ObjectId = require('mongoose').Types.ObjectId
 const moment = require('moment')
 
+/////////////////// create blog  /////////////////
 
 const createblog = async function (req, res) {
     try {
         let data = req.body;
         let savedData = await blogmodel.create(data);
-        res.send({ msg: savedData });
+        res.status(200).send({ msg: savedData });
     } catch (err) {
         return res.status(500).send({ msg: err.message });
     }
 };
+
+////////////////////////  update blog  //////////////
 
 const updateblog = async function (req, res) {
     try {
@@ -30,7 +33,7 @@ const updateblog = async function (req, res) {
     }
 };
 
-
+/////////////////////  create blog document  //////////////
 
 const isValid = (val) => {
     if (typeof val === "undefined" || val === "null") return false;
@@ -61,6 +64,10 @@ const createblogdocument = async function (req, res) {
         res.status(500).send(error.message)
     }
 }
+
+//////////////////////  get all Blogs  ///////////////////////////
+
+
 const getallBlogs = async function (req, res) {
     try {
         let filterbyid = req.query.authorid
