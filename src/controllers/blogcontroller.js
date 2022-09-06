@@ -3,17 +3,6 @@ const authormodel = require("../models/authormodel")
 const ObjectId = require('mongoose').Types.ObjectId
 const moment = require('moment')
 
-
-const createblog = async function (req, res) {
-    try {
-        let data = req.body;
-        let savedData = await blogmodel.create(data);
-        res.send({ msg: savedData });
-    } catch (err) {
-        return res.status(500).send({ msg: err.message });
-    }
-};
-
 const updateblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
@@ -23,7 +12,7 @@ const updateblog = async function (req, res) {
             return res.status(400).send({ status: false, msg: "no such blog is exist" });
         }
         let blogData = req.body;
-        let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, blogData, { isPublished: true }, { new: true, }, { publishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true });
+        let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { isPublished: true, publishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { new: true, upsert: true });
         res.status(200).send({ status: true, data: updateblog });
     } catch (err) {
         return res.status(500).send({ msg: err.message });
@@ -76,17 +65,17 @@ const getallBlogs = async function (req, res) {
         }
         if (filterbycategory) {
             let databycategory = await blogmodel.find({ isDelete: false } && { published: true } && { category: filterbycategory })
-            if (!databycategory == []) return res.send({ status: false, msg: "data not found" })
+            if (databycategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databycategory })
         }
         if (filterbytags) {
             let databytags = await blogmodel.find({ isDelete: false } && { published: true } && { tags: filterbytags })
-            if (!databytags == []) return res.send({ status: false, msg: "data not found" })
+            if (databytags == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databytags })
         }
         if (filterbysubcategory) {
             let databysubcategory = await blogmodel.find({ isDelete: false } && { published: true } && { subcategory: filterbysubcategory })
-            if (!databysubcategory == []) return res.send({ status: false, msg: "data not found" })
+            if (databysubcategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databysubcategory })
         }
 
@@ -104,4 +93,4 @@ const getallBlogs = async function (req, res) {
 module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
-module.exports.createblog = createblog
+
