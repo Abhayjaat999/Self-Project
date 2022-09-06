@@ -12,4 +12,6 @@ router.post("/blogs",blogcontroller.createblogdocument)
 
 router.put("/blogs/:blogId",blogcontroller.updateblog)
 
+router.delete("/blogs",blogcontroller.deleteBlogParam)
+
 module.exports = router;
