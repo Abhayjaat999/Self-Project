@@ -68,7 +68,6 @@ const createblogdocument = async function (req, res) {
         if (!authorId) res.status(404).send("authorid is not Present ")
         const createbody = await blogmodel.create(req.body)
 
-
         res.status(201).send({
             status: true,
             data: createbody
@@ -79,59 +78,47 @@ const createblogdocument = async function (req, res) {
 }
 const getallBlogs = async function (req, res) {
     try {
-
-    
-
-        let filterbyid = req.query.authorid
-        let filterbycategory = req.query.catagory
-        let filterbytags = req.query.tags
-        let filterbysubcategory = req.query.subcategory
-
-        if (!ObjectId.isValid(filterbyid)) return res.send({ status: false, msg: "object id is not valid" })
-
-        if (filterbyid && filterbycategory && filterbytags && filterbycategory) {
-            let databyfilter = await blogmodel.find({ isDeleted: false } && { published: true } && { authorId: filterbyid } && { category: filterbycategory } && { tags: filterbytags } && { subcategory: filterbysubcategory })
-            if (databyfilter == []) return res.send({ status: false, msg: "data not found" })
-            return res.status(200).send({ status: true, data: databyfilter })
-        }
-
-        if (filterbyid) {
-            let databyid = await blogmodel.find({ isDelete: false } && { published: true } && { authorId: filterbyid })
-            if (databyid == []) return res.send({ status: false, msg: "data not found" })
-            return res.status(200).send({ status: true, data: databyid })
-        }
-        if (filterbycategory) {
-            let databycategory = await blogmodel.find({ isDelete: false } && { published: true } && { category: filterbycategory })
-            if (databycategory == []) return res.send({ status: false, msg: "data not found" })
-            return res.status(200).send({ status: true, data: databycategory })
-        }
-        if (filterbytags) {
-            let databytags = await blogmodel.find({ isDelete: false } && { published: true } && { tags: filterbytags })
-            if (databytags == []) return res.send({ status: false, msg: "data not found" })
-            return res.status(200).send({ status: true, data: databytags })
-        }
-        if (filterbysubcategory) {
-            let databysubcategory = await blogmodel.find({ isDelete: false } && { published: true } && { subcategory: filterbysubcategory })
-            if (databysubcategory == []) return res.send({ status: false, msg: "data not found" })
-            return res.status(200).send({ status: true, data: databysubcategory })
-        }
-
-        return res.status(404).send({ status: false, msg: "Data not found" })
+        let obj = {}
 
 
+        let { authorid, catagory, tags, subcategory } = req.query
+
+        if (authorid) { obj.authorId = authorid }
+        if (catagory) { obj.catagory = catagory }
+        if (tags) { obj.tags = {$in : [tags]} }
+        if (subcategory) { obj.subcatagory = {$in : [subcategory]} }
+
+      let savedData = await blogmodel.find(obj)
+      if (savedData.length == 0) {
+        return res.status(404).send({status : false , msg : "no document found"})
+      }
+      return res.status(404).send({status : true , msg : savedData})
     }
     catch (err) {
-        res.status(404).send({
+        res.status(500).send({
             status: false,
             msg: err.message
         })
     }
+
+    
+
+       
 }
 
 
 const deleteBlogParam = async function (req, res) {
 
-    // const { title, body, authorId, tags, catagory, subcatagory, isDeleted, isPublished } = req.body
+    // const { authorid, tags, catagory, subcatagory, isPublished } = req.body
+
+    // let obj = {}
+
+    // if (authorid) { obj.authorId = authorid }
+    // if (authorid) { obj.authorId = authorid }
+    // if (authorid) { obj.authorId = authorid }
+    // if (authorid) { obj.authorId = authorid }
+
+
 
     let filterbyid = req.query.authorid
     let filterbycategory = req.query.category
@@ -219,6 +206,7 @@ const deleteBlogid = async function (req, res) {
 module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
-module.exports.createblog = createblog
 module.exports.deleteBlogid = deleteBlogid
+module.exports.deleteBlogParam = deleteBlogParam
+
 
