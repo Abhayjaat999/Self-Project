@@ -91,23 +91,20 @@ const getallBlogs = async function (req, res) {
         }
         if (filterbycategory) {
             let databycategory = await blogmodel.find({ isDelete: false } && { published: true } && { category: filterbycategory })
-            if (!databycategory == []) return res.send({ status: false, msg: "data not found" })
+            if (databycategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databycategory })
         }
         if (filterbytags) {
             let databytags = await blogmodel.find({ isDelete: false } && { published: true } && { tags: filterbytags })
-            if (!databytags == []) return res.send({ status: false, msg: "data not found" })
+            if (databytags == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databytags })
         }
         if (filterbysubcategory) {
             let databysubcategory = await blogmodel.find({ isDelete: false } && { published: true } && { subcategory: filterbysubcategory })
-            if (!databysubcategory == []) return res.send({ status: false, msg: "data not found" })
+            if (databysubcategory == []) return res.send({ status: false, msg: "data not found" })
             return res.status(200).send({ status: true, data: databysubcategory })
         }
-
         return res.status(404).send({ status: false, msg: "Data not found" })
-
-
     }
     catch (err) {
         res.status(404).send({
@@ -116,13 +113,13 @@ const getallBlogs = async function (req, res) {
         })
     }
 }
+
 const deleteBlogid = async function (req, res){
     let id = req.params.blogId;
     let Blog = await blogmodel.findOne({ _id: id });
     if (!Blog) {
         return res.status(400).send({ status: false, msg: "No such blog found" });
       }
-      
       if (data.isDeleted == false) {
         let Update = await blogmodel.findOneAndUpdate(
           { _id: id },
@@ -131,6 +128,7 @@ const deleteBlogid = async function (req, res){
         );
 }
 }
+
 
 
 
