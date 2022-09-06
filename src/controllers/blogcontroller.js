@@ -110,20 +110,32 @@ const getallBlogs = async function (req, res) {
     }
 }
 const deleteBlogid = async function (req, res){
-    let id = req.params.blogId;
-    let Blog = await blogmodel.findOne({ _id: id });
-    if (!Blog) {
-        return res.status(400).send({ status: false, msg: "No such blog found" });
-      }
-      
-      if (data.isDeleted == false) {
-        let Update = await blogmodel.findOneAndUpdate(
-          { _id: id },
-          { isDeleted: true, deletedAt: Date() },
-          { new: true }
-        );
+    
+   try {
+     let id = req.params.blogId;
+     let Blog = await blogmodel.findOne({ _id: id });
+     if (!Blog) {
+         return res.status(400).send({ status: false, msg: "No such blog found" });
+       }
+       
+       if (Blog.isDeleted == false) {
+         let Update = await blogmodel.findOneAndUpdate(
+           { _id: id },
+           { isDeleted: true, deletedAt: Date() },
+           { new: true }
+         );
+         return res.status(400).send({ status: true, msg: Update });
+
+   } 
+}
+   catch (err) {
+    res.status(404).send({
+        status: false,
+        msg: err.message
+    })
 }
 }
+    
 
 
 
@@ -133,3 +145,4 @@ module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
 module.exports.createblog = createblog
+module.exports.deleteBlogid = deleteBlogid
