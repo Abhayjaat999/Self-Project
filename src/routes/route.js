@@ -13,7 +13,7 @@ router.get("/blogs", middleware.authenticate, middleware.authorise, blogcontroll
 
 
 //CREATE BLOG
-router.post("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.createblogdocument)
+router.post("/blogs", blogcontroller.createblogdocument)
 
 
 // UPDATE BLOG

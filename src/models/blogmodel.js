@@ -6,27 +6,29 @@ const BlogSchema = new mongoose.Schema({
         type: String,
         required: true
     },
- body:  {
-        type:String,
-        required:true
- },
- authorId:  {
-    type: ObjectId,
-    ref: "Author",
-    required:true
-},
-   tags: [String] ,
-
-   category: { type:String, 
-    required:true, 
-    enum: ["technology", "entertainment", "life style", "food"," fashion"],
-   },
-    subcategory: {type:[String], 
-    enum:["web development","mobile development","AI","ML"] 
+    body: {
+        type: String,
+        required: true
     },
-isDeleted: {type:Boolean, default: false},
-isPublished: {type:Boolean, default: true},
-PublishedAt : String
+    authorId: {
+        type: ObjectId,
+        ref: "Author",
+        required: true
+    },
+    tags: [String],
+
+    category: {
+        type: String,
+        required: true,
+        enum: ["technology", "entertainment", "life style", "food", " fashion"],
+    },
+    subcategory: {
+        type: [String],
+        enum: ["web development", "mobile development", "AI", "ML"]
+    },
+    isDeleted: { type: Boolean, default: false },
+    isPublished: { type: Boolean, default: true },
+    PublishedAt: String
 
 }, { timestamps: true });
 module.exports = mongoose.model('Blog', BlogSchema)

@@ -1,27 +1,10 @@
 const { default: mongoose } = require("mongoose")
-
+const jwttoken = require('jsonwebtoken')
+const blogmodel = require("../models/blogmodel")
 
 const validationforbody = async function (req, res, next) {
-    // if (req.body) {
-    //     if (Object.keys(req.body).length > 0) {
-    //         if (req.body.authorId) {
-    //             validateobjid = mongoose.Types.ObjectId.isValid(req.body.authorId)
-    //             if (!validateobjid) return res.status(400).send({ status: false, msg: "Not a valid id" })
-    //         }
-    //         return next()
-    //     }
-    //     return res.status(400).send({ status: false, msg: "please provide details" })
-    // }
-    // if (req.query) {
-    //     if (Object.keys(req.query).length > 0) {
-    //         if (req.body.authorId) {
-    //             validateobjid = mongoose.Types.ObjectId.isValid(req.body.authorId)
-    //             if (!validateobjid) return res.status(400).send({ status: false, msg: "Not a valid id" })
-    //         }
-    //         return next()
-    //     }
-    //     return res.status(400).send({ status: false, msg: "please provide details" })
-    // }
+
+
 
     if (req.body) {
         if (Object.keys(req.body).length > 0) {
@@ -63,18 +46,7 @@ const validationforbody = async function (req, res, next) {
         return res.status(400).send({ status: false, msg: "please provide details" })
     }
 }
-
-// const checkautid = async (req, res, next) =>
-//  {
-//     if (!req.body.authorId) return res.status(404).send({ status: false, msg: "authorid is not present" })
-//     next()
-// }
-
-
-const jwttoken = require('jsonwebtoken')
-const blogmodel = require("../models/blogmodel")
 const authenticate = function (req, res, next) {
-    // let decodedToken = jwttoken.verify(token, "Blogging-Site")
     try {
         let token = req.headers['x-api-key']
         if (!token) { return res.status(400).send({ status: false, message: "Token is missing" }) }
@@ -85,7 +57,6 @@ const authenticate = function (req, res, next) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-
 
 const authorise = async function (req, res, next) {
     try {
@@ -120,4 +91,3 @@ const authorise = async function (req, res, next) {
 module.exports.authenticate = authenticate
 module.exports.authorise = authorise
 module.exports.validationforbody = validationforbody
-// module.exports.checkautid = checkautid
