@@ -219,6 +219,7 @@ const deleteBlogid = async function (req, res) {
 module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
-module.exports.createblog = createblog
+// module.exports.createblog = createblog
 module.exports.deleteBlogid = deleteBlogid
+module.exports.deleteBlogParam = deleteBlogParam
 
