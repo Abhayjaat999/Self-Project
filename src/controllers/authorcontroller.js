@@ -1,5 +1,6 @@
 const authormodel = require("../models/authormodel")
 
+// =====================================||CREATE AUTHORS||===========================================================
 
 const createAuthors = async function (req, res) {
     try {
@@ -10,5 +11,6 @@ const createAuthors = async function (req, res) {
         res.status(500).send({ status: false, msg: error.message })
     }
 }
+// =======================================================================================================
 
 module.exports.createAuthors = createAuthors
