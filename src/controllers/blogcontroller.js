@@ -1,12 +1,14 @@
 const blogmodel = require("../models/blogmodel")
 const moment = require('moment')
 const { default: mongoose } = require("mongoose")
+const authormodel = require("../models/authormodel")
+const jwt = require("jsonwebtoken")
 
 // ===============================||CREATE BLOG||================================================
 const createblogdocument = async function (req, res) {
     try {
         const createbody = await blogmodel.create(req.body)
-        
+
 
         res.status(201).send({ status: true, data: createbody })
     } catch (error) {
@@ -21,17 +23,17 @@ const createblogdocument = async function (req, res) {
 const updateblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
-        if(!blogId) return res.send("blogId is required")
+        if (!blogId) return res.send("blogId is required")
         validateobjid = mongoose.Types.ObjectId.isValid(blogId)
-        if(!validateobjid) return res.send("invalid blog id")
+        if (!validateobjid) return res.send("invalid blog id")
         let blogDetails = await blogmodel.findById(blogId);
         if (!blogDetails) {
             return res.status(400).send({ status: false, msg: "no such blog is exist" });
-        }    
+        }
         validateobjid = mongoose.Types.ObjectId.isValid(blogId)
         let { title, body, tags, category, subcategory } = req.body;
 
-        let obj = {}
+        let obj = { isDeleted: false }
         let convertobjinarr = {}
         if (title !== null) { obj.title = title }
         if (body !== null) { obj.body = body }
@@ -58,7 +60,7 @@ const getallBlogs = async function (req, res) {
 
         if (authorid) { obj.authorId = authorid }
         if (catagory) { obj.catagory = catagory }
-        if (tags) { obj.tags = { $in: [tags] } }
+        if (tags) { obj.tags = tags }
         if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
 
         let savedData = await blogmodel.find(obj)
@@ -139,10 +141,34 @@ const deleteBlogid = async function (req, res) {
 
 
 
+const loginUser = async function (req, res) {
+
+    try {
+        let { email, password } = req.body
+        if (!email) return res.status(400).send({ status: false, message: "EmailId is mandatory" })
+        if (!password) return res.status(400).send({ status: false, message: "Password is mandatory" })
+        let authorCheck = await authormodel.findOne({ email: email, password: password });
+        if (!authorCheck) return res.status(400).send({ status: false, message: "EmailId or password is incorrect" })
+        let token = jwt.sign(
+            {
+                authorId: authorCheck._id.toString(),
+                batch: "Plutonium",
+                organisation: "Project-1, Group-34"
+            },
+            "Blogging-Site"
+        );
+        return res.status(201).send({ status: true, message: token })
+    }
+    catch (error) {
+        res.status(500).send({ status: false, message: error.message })
+    }
+}
+
 module.exports.getallBlogs = getallBlogs
 module.exports.createblogdocument = createblogdocument
 module.exports.updateblog = updateblog
 module.exports.deleteBlogid = deleteBlogid
 module.exports.deleteBlogParam = deleteBlogParam
+module.exports.loginUser = loginUser
 
 
