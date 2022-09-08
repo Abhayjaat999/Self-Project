@@ -58,7 +58,7 @@ const getallBlogs = async function (req, res) {
         let obj = { isDeleted: false, isPublished: true }
         let { authorid, catagory, tags, subcategory } = req.query
 
-        if (authorid) { obj.authorId = authorid }
+        if (authorid) { obj.authorid = authorid }
         if (catagory) { obj.catagory = catagory }
         if (tags) { obj.tags = tags }
         if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
@@ -87,7 +87,7 @@ const deleteBlogParam = async function (req, res) {
 
         let obj = { isDeleted: false, }
 
-        if (authorid) { obj.authorId = authorid }
+        if (authorid) { obj.authorid = authorid }
         if (category) { obj.category = category }
         if (isPublished) { obj.isPublished = isPublished }
         if (tags) { obj.tags = { $in: [tags] } }
