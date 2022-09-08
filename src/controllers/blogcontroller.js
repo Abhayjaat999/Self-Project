@@ -3,10 +3,20 @@ const moment = require('moment')
 const { default: mongoose } = require("mongoose")
 const authormodel = require("../models/authormodel")
 const jwt = require("jsonwebtoken")
+const validfun = require("../validationfunction/validfun")
 
 // ===============================||CREATE BLOG||================================================
 const createblogdocument = async function (req, res) {
     try {
+        let { title, body, authorId, tags, category, subcategory } = req.body
+
+        if (!title) return res.send({ status: false, msg: "title is required" })
+        if (!body) return res.send({ status: false, msg: "body is required" })
+        if (!authorId) return res.send({ status: false, msg: "authorId is required" })
+        if (!category) return res.send({ status: false, msg: "category is required" })
+
+
+      if (!mongoose.Types.ObjectId.isValid(authorId)) return res.send({ status: false, msg: "Auther id is not valid" })
         const createbody = await blogmodel.create(req.body)
 
 
@@ -22,28 +32,30 @@ const createblogdocument = async function (req, res) {
 
 const updateblog = async function (req, res) {
     try {
-        let blogId = req.params.blogId;
-        if (!blogId) return res.send("blogId is required")
-        validateobjid = mongoose.Types.ObjectId.isValid(blogId)
-        if (!validateobjid) return res.send("invalid blog id")
-        let blogDetails = await blogmodel.findById(blogId);
-        if (!blogDetails) {
-            return res.status(400).send({ status: false, msg: "no such blog is exist" });
-        }
-        validateobjid = mongoose.Types.ObjectId.isValid(blogId)
-        let { title, body, tags, category, subcategory } = req.body;
+  
+    let blogId = req.params.blogId;
+    if (!blogId) return res.send("blogId is required")
+    let blogDetails = await blogmodel.findById(blogId);
+    if (!blogDetails) {
+        return res.status(400).send({ status: false, msg: "no such blog is exist" });
+    }
 
-        let obj = { isDeleted: false }
-        let convertobjinarr = {}
-        if (title !== null) { obj.title = title }
-        if (body !== null) { obj.body = body }
-        if (category !== null) { obj.category = category }
-        if (tags !== null) { convertobjinarr.tags = tags }
-        if (subcategory !== null) { convertobjinarr.subcategory = subcategory }
+    validateobjid = mongoose.Types.ObjectId.isValid(blogId)
+    let { title, body, tags, category, subcategory } = req.body;
 
-        let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { $set: obj, $push: convertobjinarr, isPublished: true, PublishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true, new: true })
 
-        res.status(200).send({ status: true, data: updateblog });
+    let obj = {}
+    let convertobjinarr = {}
+    if (title !== null) { obj.title = title }
+    if (body !== null) { obj.body = body }
+    if (category !== null) { obj.category = category }
+    if (tags !== null) { convertobjinarr.tags = tags }
+    if (subcategory !== null) { convertobjinarr.subcategory = subcategory }
+
+
+    let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { $set: obj, $push: convertobjinarr, isPublished: true, PublishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true, new: true })
+    if (updateblog.isDeleted == true) return res.status(404).send({ status: false, data: "data not found" })
+    res.status(200).send({ status: true, data: updateblog });
     } catch (err) {
         return res.status(500).send({ msg: err.message });
     }
@@ -84,13 +96,14 @@ const deleteBlogParam = async function (req, res) {
     try {
 
         let { authorid, category, tags, subcategory, isPublished } = req.query
-
+        if (!validfun.validation.checkquery(req.query)) return res.status(400).send({ status: false, message: "Data must be present" })
         let obj = { isDeleted: false, }
 
         if (authorid) { obj.authorid = authorid }
         if (category) { obj.category = category }
         if (isPublished) { obj.isPublished = isPublished }
-        if (tags) { obj.tags = { $in: [tags] } }
+        if (tags) { obj.tags = tags }
+        console.log(obj)
         if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
 
         let updateddata = await blogmodel.updateMany(obj, { isDeleted: true }, { new: true })
@@ -138,13 +151,12 @@ const deleteBlogid = async function (req, res) {
     }
 }
 // =========================================================================================================
-
-
-
 const loginUser = async function (req, res) {
 
     try {
+
         let { email, password } = req.body
+        if (!validfun.validation.checkbody(req.body)) return res.status(400).send({ status: false, message: "Data must be present" })
         if (!email) return res.status(400).send({ status: false, message: "EmailId is mandatory" })
         if (!password) return res.status(400).send({ status: false, message: "Password is mandatory" })
         let authorCheck = await authormodel.findOne({ email: email, password: password });
@@ -152,8 +164,8 @@ const loginUser = async function (req, res) {
         let token = jwt.sign(
             {
                 authorId: authorCheck._id.toString(),
-                batch: "Plutonium",
-                organisation: "Project-1, Group-34"
+                batch: "Plutonium/cohert",
+                organisation: "Project-1"
             },
             "Blogging-Site"
         );
