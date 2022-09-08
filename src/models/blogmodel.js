@@ -17,7 +17,7 @@ const BlogSchema = new mongoose.Schema({
 },
    tags: [String] ,
 
-   category: {type:String, 
+   category: { type:String, 
     required:true, 
     enum: ["technology", "entertainment", "life style", "food"," fashion"],
    },
@@ -25,7 +25,7 @@ const BlogSchema = new mongoose.Schema({
     enum:["web development","mobile development","AI","ML"] 
     },
 isDeleted: {type:Boolean, default: false},
-isPublished: {type:Boolean, default: false},
+isPublished: {type:Boolean, default: true},
 PublishedAt : String
 
 }, { timestamps: true });
