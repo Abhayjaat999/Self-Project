@@ -4,7 +4,7 @@ const validfun = require("../validationfunction/validfun")
 
 const createAuthors = async function (req, res) {
     try {
-        let { email, password, title ,fname ,lname } = req.body
+        let { email, password, title, fname, lname } = req.body
 
 
         if (!fname) return res.send({ status: false, msg: "fname is required" })
@@ -21,19 +21,14 @@ const createAuthors = async function (req, res) {
 
         if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password))
             return res.status(400).send({ msg: "Password is invalid", status: false })
-<<<<<<< HEAD
-=======
-           
-            if (!validfun.isValidTitle(title,["Mr", "Mrs", "Miss"]) ) {
-                return res
-                  .status(400)
-                  .send({
+
+        if (!validfun.isValidTitle(title, ["Mr", "Mrs", "Miss"])) {
+            return res.status(400).send({
                     status: false,
                     message: `Title should be among Mr, Mrs, Miss`,
-                   });
-                }
-        
->>>>>>> b30432a727965b5d1ed57e178b00b1d860d7607e
+                });
+        }
+
 
         let savedData = await authormodel.create(req.body)
         res.send({ msg: savedData })

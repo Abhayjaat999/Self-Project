@@ -14,24 +14,7 @@ const createblogdocument = async function (req, res) {
         if (!body) return res.send({ status: false, msg: "body is required" })
         if (!authorId) return res.send({ status: false, msg: "authorId is required" })
         if (!category) return res.send({ status: false, msg: "category is required" })
-        if (!validfun.isValidTitle(subcategory,["web development", "mobile development", "AI", "ML"]) ) {
-            return res
-              .status(400)
-              .send({
-                status: false,
-                message: `subcategory should be among web development, mobile development, AI,ML`,
-               });
-            }
-            if (!validfun.isValidTitle(category,["technology", "entertainment", "life style", "food", " fashion"]) ) {
-                return res
-                  .status(400)
-                  .send({
-                    status: false,
-                    message: `subcategory should be among web development, mobile development, AI,ML`,
-                   });
-                }
 
-      if (!mongoose.Types.ObjectId.isValid(authorId)) return res.send({ status: false, msg: "Auther id is not valid" })
         const createbody = await blogmodel.create(req.body)
         let checkauthid = await authormodel.findById(authorId)
         if (!checkauthid) return res.send({ status: false, msg: "Auther id is not valid" })
@@ -48,30 +31,30 @@ const createblogdocument = async function (req, res) {
 
 const updateblog = async function (req, res) {
     try {
-  
-    let blogId = req.params.blogId;
-    if (!blogId) return res.send("blogId is required")
-    let blogDetails = await blogmodel.findById(blogId);
-    if (!blogDetails) {
-        return res.status(400).send({ status: false, msg: "no such blog is exist" });
-    }
 
-    validateobjid = mongoose.Types.ObjectId.isValid(blogId)
-    let { title, body, tags, category, subcategory } = req.body;
+        let blogId = req.params.blogId;
+        if (!blogId) return res.send("blogId is required")
+        let blogDetails = await blogmodel.findById(blogId);
+        if (!blogDetails) {
+            return res.status(400).send({ status: false, msg: "no such blog is exist" });
+        }
 
-
-    let obj = {}
-    let convertobjinarr = {}
-    if (title !== null) { obj.title = title }
-    if (body !== null) { obj.body = body }
-    if (category !== null) { obj.category = category }
-    if (tags !== null) { convertobjinarr.tags = tags }
-    if (subcategory !== null) { convertobjinarr.subcategory = subcategory }
+        validateobjid = mongoose.Types.ObjectId.isValid(blogId)
+        let { title, body, tags, category, subcategory } = req.body;
 
 
-    let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { $set: obj, $push: convertobjinarr, isPublished: true, PublishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true, new: true })
-    if (updateblog.isDeleted == true) return res.status(404).send({ status: false, data: "data not found" })
-    res.status(200).send({ status: true, data: updateblog });
+        let obj = {}
+        let convertobjinarr = {}
+        if (title !== null) { obj.title = title }
+        if (body !== null) { obj.body = body }
+        if (category !== null) { obj.category = category }
+        if (tags !== null) { convertobjinarr.tags = tags }
+        if (subcategory !== null) { convertobjinarr.subcategory = subcategory }
+
+
+        let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { $set: obj, $push: convertobjinarr, isPublished: true, PublishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true, new: true })
+        if (updateblog.isDeleted == true) return res.status(404).send({ status: false, data: "data not found" })
+        res.status(200).send({ status: true, data: updateblog });
     } catch (err) {
         return res.status(500).send({ msg: err.message });
     }
