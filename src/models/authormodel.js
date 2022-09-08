@@ -24,10 +24,11 @@ const AuthorSchema = new mongoose.Schema({
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
 
     },
-    password: {
-        type: String,
+password: {
+    type: String,
         required: true,
-        unique: true,
+            unique: true,
+       
     },
 
 }, { timestamps: true });

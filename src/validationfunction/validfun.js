@@ -13,5 +13,4 @@ function checkquery(value) {
 }
 
 
-
 module.exports.validation = {checkbody , checkquery }

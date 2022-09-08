@@ -31,15 +31,18 @@ const createblogdocument = async function (req, res) {
 // ===============================||UPDATE BLOG||=========================================================
 
 const updateblog = async function (req, res) {
-    // try {
+    try {
+  
     let blogId = req.params.blogId;
     if (!blogId) return res.send("blogId is required")
     let blogDetails = await blogmodel.findById(blogId);
     if (!blogDetails) {
         return res.status(400).send({ status: false, msg: "no such blog is exist" });
     }
+
     validateobjid = mongoose.Types.ObjectId.isValid(blogId)
     let { title, body, tags, category, subcategory } = req.body;
+
 
     let obj = {}
     let convertobjinarr = {}
@@ -49,12 +52,13 @@ const updateblog = async function (req, res) {
     if (tags !== null) { convertobjinarr.tags = tags }
     if (subcategory !== null) { convertobjinarr.subcategory = subcategory }
 
+
     let updateblog = await blogmodel.findOneAndUpdate({ _id: blogId }, { $set: obj, $push: convertobjinarr, isPublished: true, PublishedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { upsert: true, new: true })
     if (updateblog.isDeleted == true) return res.status(404).send({ status: false, data: "data not found" })
     res.status(200).send({ status: true, data: updateblog });
-    // } catch (err) {
-    //     return res.status(500).send({ msg: err.message });
-    // }
+    } catch (err) {
+        return res.status(500).send({ msg: err.message });
+    }
 }
 // =======================================================================================================
 
