@@ -14,8 +14,16 @@ const createAuthors = async function (req, res) {
 
         if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password))
             return res.status(400).send({ msg: "Password is invalid", status: false })
-
-        if(! validateenum(["Mr", "Mrs", "Miss"] , title)) return res.send({})
+           
+            if (!validfun.isValidTitle(title,["Mr", "Mrs", "Miss"]) ) {
+                return res
+                  .status(400)
+                  .send({
+                    status: false,
+                    message: `Title should be among Mr, Mrs, Miss`,
+                   });
+                }
+        
 
         let savedData = await authormodel.create(req.body)
         res.send({ msg: savedData })

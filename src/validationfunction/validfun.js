@@ -12,5 +12,9 @@ function checkquery(value) {
     return (Object.keys(value).length > 0)
 }
 
+const isValidTitle = function (title,inp) {
+    return inp.indexOf(title) !== -1;
+  };
 
-module.exports.validation = {checkbody , checkquery }
+module.exports.isValidTitle = isValidTitle
+module.exports.validation = {checkbody , checkquery ,}
