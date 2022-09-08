@@ -14,11 +14,27 @@ const createblogdocument = async function (req, res) {
         if (!body) return res.send({ status: false, msg: "body is required" })
         if (!authorId) return res.send({ status: false, msg: "authorId is required" })
         if (!category) return res.send({ status: false, msg: "category is required" })
-
+        if (!validfun.isValidTitle(subcategory,["web development", "mobile development", "AI", "ML"]) ) {
+            return res
+              .status(400)
+              .send({
+                status: false,
+                message: `subcategory should be among web development, mobile development, AI,ML`,
+               });
+            }
+            if (!validfun.isValidTitle(category,["technology", "entertainment", "life style", "food", " fashion"]) ) {
+                return res
+                  .status(400)
+                  .send({
+                    status: false,
+                    message: `subcategory should be among web development, mobile development, AI,ML`,
+                   });
+                }
 
       if (!mongoose.Types.ObjectId.isValid(authorId)) return res.send({ status: false, msg: "Auther id is not valid" })
         const createbody = await blogmodel.create(req.body)
-
+        let checkauthid = await authormodel.findById(authorId)
+        if (!checkauthid) return res.send({ status: false, msg: "Auther id is not valid" })
 
         res.status(201).send({ status: true, data: createbody })
     } catch (error) {
@@ -70,7 +86,7 @@ const getallBlogs = async function (req, res) {
         let obj = { isDeleted: false, isPublished: true }
         let { authorid, catagory, tags, subcategory } = req.query
 
-        if (authorid) { obj.authorId = authorid }
+        if (authorid) { obj.authorid = authorid }
         if (catagory) { obj.catagory = catagory }
         if (tags) { obj.tags = tags }
         if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
@@ -99,7 +115,7 @@ const deleteBlogParam = async function (req, res) {
         if (!validfun.validation.checkquery(req.query)) return res.status(400).send({ status: false, message: "Data must be present" })
         let obj = { isDeleted: false, }
 
-        if (authorid) { obj.authorId = authorid }
+        if (authorid) { obj.authorid = authorid }
         if (category) { obj.category = category }
         if (isPublished) { obj.isPublished = isPublished }
         if (tags) { obj.tags = tags }
