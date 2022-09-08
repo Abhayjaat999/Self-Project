@@ -4,16 +4,17 @@ const Authorcontroller = require("../controllers/authorcontroller")
 const blogcontroller = require("../controllers/blogcontroller")
 const middleware = require("../middleware/validation")
 
+
 // CREATE AUTHER
 router.post("/authors", Authorcontroller.createAuthors)
 
 
 // GET BLOGS BY FILTER
-router.get("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.getallBlogs)
+router.get("/blogs",middleware.authenticate, middleware.authorise, middleware.authenticate, middleware.authorise, blogcontroller.getallBlogs)
 
 
 //CREATE BLOG
-router.post("/blogs", blogcontroller.createblogdocument)
+router.post("/blogs",middleware.authenticate, middleware.authorise, blogcontroller.createblogdocument)
 
 
 // UPDATE BLOG
@@ -23,11 +24,10 @@ router.put("/blogs/:blogId", middleware.authenticate, middleware.authorise, blog
 //DELETE BLOGS BY FILTER
 router.delete("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.deleteBlogParam)
 
+//LOGIN BY CRINDENTIALS
 router.post("/login", blogcontroller.loginUser)
 
-
 //DELETE BLOG BY ID
-
 router.delete("/blogs/:blogId", middleware.authenticate, middleware.authorise, blogcontroller.deleteBlogid)
 
 

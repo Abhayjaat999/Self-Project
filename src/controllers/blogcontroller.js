@@ -10,17 +10,13 @@ const createblogdocument = async function (req, res) {
     try {
         let { title, body, authorId, tags, category, subcategory } = req.body
 
-        if (!title) return res.send({ status: false, msg: "title is reuired" })
-        if (!body) return res.send({ status: false, msg: "body is reuired" })
-        if (!authorId) return res.send({ status: false, msg: "authorId is reuired" })
-        if (!category) return res.send({ status: false, msg: "category is reuired" })
+        if (!title) return res.send({ status: false, msg: "title is required" })
+        if (!body) return res.send({ status: false, msg: "body is required" })
+        if (!authorId) return res.send({ status: false, msg: "authorId is required" })
+        if (!category) return res.send({ status: false, msg: "category is required" })
 
-        
-        if (typeof (title) !== String) return res.send({ status: false, msg: "Wrong format title must be string" })
-        if (!body) return res.send({ status: false, msg: "body is reuired" })
-        if (!authorId) return res.send({ status: false, msg: "authorId is reuired" })
-        if (!category) return res.send({ status: false, msg: "category is reuired" })
 
+      if (!mongoose.Types.ObjectId.isValid(authorId)) return res.send({ status: false, msg: "Auther id is not valid" })
         const createbody = await blogmodel.create(req.body)
 
 
@@ -102,7 +98,8 @@ const deleteBlogParam = async function (req, res) {
         if (authorid) { obj.authorId = authorid }
         if (category) { obj.category = category }
         if (isPublished) { obj.isPublished = isPublished }
-        if (tags) { obj.tags = { $in: [tags] } }
+        if (tags) { obj.tags = tags }
+        console.log(obj)
         if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
 
         let updateddata = await blogmodel.updateMany(obj, { isDeleted: true }, { new: true })
