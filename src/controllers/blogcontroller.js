@@ -4,21 +4,37 @@ const { default: mongoose } = require("mongoose")
 const authormodel = require("../models/authormodel")
 const jwt = require("jsonwebtoken")
 const validfun = require("../validationfunction/validfun")
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 // ===============================||CREATE BLOG||================================================
 const createblogdocument = async function (req, res) {
     try {
-        let { title, body, authorId, tags, category, subcategory } = req.body
+        let { title, body, authorId, tags, category, subcategory, isPublished, isDeleted } = req.body
 
         if (!title) return res.send({ status: false, msg: "title is required" })
         if (!body) return res.send({ status: false, msg: "body is required" })
         if (!authorId) return res.send({ status: false, msg: "authorId is required" })
         if (!category) return res.send({ status: false, msg: "category is required" })
 
-        const createbody = await blogmodel.create(req.body)
+        if (typeof (title) !== "string") return res.send({ status: false, msg: "title must be string" })
+        if (typeof (body) !== "string") return res.send({ status: false, msg: "body must be string" })
+        if (typeof (category) !== "string") return res.send({ status: false, msg: "catagory must be string" })
+
+
+        if (isDeleted) {
+            if (typeof (isDeleted) !== "boolean")
+                return res.send({ status: false, msg: "is isDeleted must be boolean" })
+        }
+        let a = typeof (isPublished)
+        if (isPublished) {
+            if (a !== "boolean")
+                return res.send({ status: false, msg: "is Published must be boolean" })
+        }
+
         let checkauthid = await authormodel.findById(authorId)
         if (!checkauthid) return res.send({ status: false, msg: "Auther id is not valid" })
 
+        const createbody = await blogmodel.create(req.body)
         res.status(201).send({ status: true, data: createbody })
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message })

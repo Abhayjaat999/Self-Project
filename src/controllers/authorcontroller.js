@@ -13,6 +13,14 @@ const createAuthors = async function (req, res) {
         if (!email) return res.send({ status: false, msg: "email is required" })
         if (!password) return res.send({ status: false, msg: "password is required" })
 
+        if (typeof (fname) !== "string") return res.send({ status: false, msg: "fname must be string" })
+        if (typeof (lname) !== "string") return res.send({ status: false, msg: "lname must be string" })
+        if (typeof (email) !== "string") return res.send({ status: false, msg: "email must be string" })
+        if (typeof (title) !== "string") return res.send({ status: false, msg: "title must be string" })
+        if (typeof (password) !== "string") return res.send({ status: false, msg: "password must be string" })
+
+
+
         let findemail = await authormodel.find({ email: email, password: password })
         if (findemail.length > 0) return res.send({ status: false, msg: "User already exists" })
 
@@ -24,9 +32,9 @@ const createAuthors = async function (req, res) {
 
         if (!validfun.isValidTitle(title, ["Mr", "Mrs", "Miss"])) {
             return res.status(400).send({
-                    status: false,
-                    message: `Title should be among Mr, Mrs, Miss`,
-                });
+                status: false,
+                message: `Title should be among Mr, Mrs, Miss`,
+            });
         }
 
 

@@ -20,11 +20,11 @@ const BlogSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
-        enum: ["technology", "entertainment", "life style", "food", " fashion"],
+
     },
     subcategory: {
         type: [String],
-        enum: ["web development", "mobile development", "AI", "ML"]
+
     },
     isDeleted: { type: Boolean, default: false },
     isPublished: { type: Boolean, default: true },
