@@ -4,7 +4,7 @@ const { default: mongoose } = require("mongoose")
 const authormodel = require("../models/authormodel")
 const jwt = require("jsonwebtoken")
 const validfun = require("../validationfunction/validfun")
-const ObjectId = mongoose.Schema.Types.ObjectId
+const ObjectId = mongoose.Types.ObjectId
 
 // ===============================||CREATE BLOG||================================================
 const createblogdocument = async function (req, res) {
@@ -112,20 +112,30 @@ const deleteBlogParam = async function (req, res) {
 
         let { authorid, category, tags, subcategory, isPublished } = req.query
         if (!validfun.validation.checkquery(req.query)) return res.status(400).send({ status: false, message: "Data must be present" })
-        let obj = { isDeleted: false, }
 
-        if (authorid) { obj.authorid = authorid }
-        if (category) { obj.category = category }
-        if (isPublished) { obj.isPublished = isPublished }
-        if (tags) { obj.tags = tags }
-        console.log(obj)
-        if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
-
-        let updateddata = await blogmodel.updateMany(obj, { isDeleted: true }, { new: true })
-        if (updateddata.modifiedCount == 0) {
-            return res.status(404).send({ status: false, msg: "no document found" })
+        if (authorid) {
+            if (!ObjectId.isValid(authorid)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
+            if (authorid !== req.decodedToken.authorId) return res.status(403).send({ status: false, message: "You are not a authorized user" })
         }
+
+        let obj = { isDeleted: true, authorId: req.decodedToken.authorId }
+
+        if (category != null) { obj.category = category }
+
+        // if (isPublished != "boolean") return res.send({ status: false, msg: "value must be boolean" })
+        // if (isPublished != null) { obj.isPublished = isPublished }
+
+        if (tags != null) { obj.tags = tags }
+        if (subcategory != null) { obj.subcatagory = subcategory }
+
+        let findobj = await blogmodel.find(obj)
+       
+        if (findobj.length == 0)
+            return res.status(404).send({ status: false, msg: "no document found" })
+
+        let updateddata = await blogmodel.updateMany(obj, { isDeleted: false }, { new: true })
         return res.status(404).send({ status: true, msg: updateddata })
+
     }
     catch (err) {
         res.status(500).send({

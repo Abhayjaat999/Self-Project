@@ -10,11 +10,11 @@ router.post("/authors", Authorcontroller.createAuthors)
 
 
 // GET BLOGS BY FILTER
-router.get("/blogs",middleware.authenticate, middleware.authorise, middleware.authenticate, middleware.authorise, blogcontroller.getallBlogs)
+router.get("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.getallBlogs)
 
 
 //CREATE BLOG
-router.post("/blogs",middleware.authenticate, middleware.authorise, blogcontroller.createblogdocument)
+router.post("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.createblogdocument)
 
 
 // UPDATE BLOG
@@ -22,7 +22,7 @@ router.put("/blogs/:blogId", middleware.authenticate, middleware.authorise, blog
 
 
 //DELETE BLOGS BY FILTER
-router.delete("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.deleteBlogParam)
+router.delete("/blogs", middleware.authenticate,  blogcontroller.deleteBlogParam)
 
 //LOGIN BY CRINDENTIALS
 router.post("/login", blogcontroller.loginUser)
@@ -30,6 +30,6 @@ router.post("/login", blogcontroller.loginUser)
 //DELETE BLOG BY ID
 router.delete("/blogs/:blogId", middleware.authenticate, middleware.authorise, blogcontroller.deleteBlogid)
 
-router.all("/*",  (req ,res)=> {res.status(404).send({ status : false , message : "Endpoint is not correct"})})
+router.all("/*", (req, res) => { res.status(404).send({ status: false, message: "Endpoint is not correct" }) })
 
 module.exports = router;

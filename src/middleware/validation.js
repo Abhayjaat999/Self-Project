@@ -8,15 +8,12 @@ const authenticate = function (req, res, next) {
         let token = req.headers['x-api-key']
         if (!token) { return res.status(400).send({ status: false, message: "Token is missing" }) }
 
-        jwttoken.verify(token, "Blogging-Site",
-        (error, decodedToken) => {
+        jwttoken.verify(token, "Blogging-Site", (error, decodedToken) => {
             if (error) {
                 if (error.message == "invalid token") return res.status(400).send({ status: false, msg: "token is not valid" })
                 return res.status(400).send({ status: false, msg: "incorrect token format" })
             }
             req.decodedToken = decodedToken
-
-
         })
         return next();
     } catch (error) {
