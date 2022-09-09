@@ -118,7 +118,7 @@ const deleteBlogParam = async function (req, res) {
             if (authorid !== req.decodedToken.authorId) return res.status(403).send({ status: false, message: "You are not a authorized user" })
         }
 
-        let obj = { isDeleted: true, authorId: req.decodedToken.authorId }
+        let obj = { isDeleted:false, authorId: req.decodedToken.authorId }
 
         if (category != null) { obj.category = category }
 
@@ -133,7 +133,7 @@ const deleteBlogParam = async function (req, res) {
         if (findobj.length == 0)
             return res.status(404).send({ status: false, msg: "no document found" })
 
-        let updateddata = await blogmodel.updateMany(obj, { isDeleted: false }, { new: true })
+        let updateddata = await blogmodel.updateMany(obj, { isDeleted: true }, { new: true })
         return res.status(404).send({ status: true, msg: updateddata })
 
     }
