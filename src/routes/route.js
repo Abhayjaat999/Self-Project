@@ -10,7 +10,7 @@ router.post("/authors", Authorcontroller.createAuthors)
 
 
 // GET BLOGS BY FILTER
-router.get("/blogs", middleware.authenticate, middleware.authorise, blogcontroller.getallBlogs)
+router.get("/blogs", middleware.authenticate,blogcontroller.getallBlogs)
 
 
 //CREATE BLOG
