@@ -6,7 +6,8 @@ const jwt = require("jsonwebtoken")
 const validfun = require("../validationfunction/validfun")
 const ObjectId = mongoose.Types.ObjectId
 
-// ===============================||CREATE BLOG||================================================
+// ====================================================||CREATE BLOG||======================================================
+
 const createblogdocument = async function (req, res) {
     try {
         let { title, body, authorId, tags, category, subcategory, isPublished, isDeleted } = req.body
@@ -40,10 +41,10 @@ const createblogdocument = async function (req, res) {
         res.status(500).send({ status: false, msg: error.message })
     }
 }
-// ====================================================================================================
+// ========================================================================================================================
 
 
-// ===============================||UPDATE BLOG||=========================================================
+// =================================================||UPDATE BLOG||=========================================================
 
 const updateblog = async function (req, res) {
     try {
@@ -75,20 +76,23 @@ const updateblog = async function (req, res) {
         return res.status(500).send({ msg: err.message });
     }
 }
-// =======================================================================================================
+// =========================================================================================================================
 
 
-// ===============================||GET ALL BLOGS BY FILTER||=========================================================
+// =================================================||GET ALL BLOGS BY FILTER||===============================================
 
 const getallBlogs = async function (req, res) {
     try {
         let obj = { isDeleted: false, isPublished: true }
         let { authorid, catagory, tags, subcategory } = req.query
 
-        if (authorid) { obj.authorid = authorid }
-        if (catagory) { obj.catagory = catagory }
-        if (tags) { obj.tags = tags }
-        if (subcategory) { obj.subcatagory = { $in: [subcategory] } }
+        if (authorid != null) { obj.authorid = authorid }
+        if (catagory != null) { obj.catagory = catagory }
+       
+        if (tags != null) { obj.tags = tags }
+      
+        if (subcategory != null) { obj.subcatagory = { $in: [subcategory] } }
+
 
         let savedData = await blogmodel.find(obj)
         if (savedData.length == 0) {
@@ -103,9 +107,9 @@ const getallBlogs = async function (req, res) {
         })
     }
 }
-// ==========================================================================================================
+// ==========================================================================================================================
 
-// ===============================||DELETE BLOG BY FILTER||===========================================================
+// ================================================||DELETE BLOG BY FILTER||===================================================
 
 const deleteBlogParam = async function (req, res) {
     try {
@@ -118,24 +122,28 @@ const deleteBlogParam = async function (req, res) {
             if (authorid !== req.decodedToken.authorId) return res.status(403).send({ status: false, message: "You are not a authorized user" })
         }
 
-        let obj = { isDeleted: true, authorId: req.decodedToken.authorId }
+        let obj = { isDeleted: false, authorid: req.decodedToken.authorId, isPublished: false }
 
         if (category != null) { obj.category = category }
 
-        // if (isPublished != "boolean") return res.send({ status: false, msg: "value must be boolean" })
-        // if (isPublished != null) { obj.isPublished = isPublished }
 
-        if (tags != null) { obj.tags = tags }
-        if (subcategory != null) { obj.subcatagory = subcategory }
+        if (tags != null) {
+            tags = tags.split(",")
+            obj.tags = { $in: tags }
+        }
 
-        let findobj = await blogmodel.find(obj)
-       
-        if (findobj.length == 0)
-            return res.status(404).send({ status: false, msg: "no document found" })
 
-        let updateddata = await blogmodel.updateMany(obj, { isDeleted: false }, { new: true })
+        if (subcategory != null) {
+            subcategory = subcategory.split(",")
+            obj.subcatagory = { $in: subcategory }
+        }
+
+
+        let updateddata = await blogmodel.updateMany(obj, { isDeleted: true, deletedAt: moment().format("DD/MM/YYYY , h:mm:ss a") }, { new: true })
+
+        if (updateddata.modifiedCount == 0) return res.status(404).send({ status: false, msg: "no document found" })
+
         return res.status(404).send({ status: true, msg: updateddata })
-
     }
     catch (err) {
         res.status(500).send({
@@ -144,7 +152,7 @@ const deleteBlogParam = async function (req, res) {
         })
     }
 }
-// =======================================================================================================
+// ==========================================================================================================================
 
 
 // =============================================||DELETE BLOG BY BLOG ID||===========================================================
@@ -169,6 +177,7 @@ const deleteBlogid = async function (req, res) {
         }
     }
     catch (err) {
+        
         res.status(404).send({
             status: false,
             msg: err.message
