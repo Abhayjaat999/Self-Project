@@ -28,7 +28,7 @@ router.delete("/blogs", middleware.authenticate,  blogcontroller.deleteBlogParam
 router.post("/login", blogcontroller.loginUser)
 
 //DELETE BLOG BY ID
-router.delete("/blogs/:blogId", middleware.authenticate, middleware.authorise, blogcontroller.deleteBlogid)
+router.delete("/blogs/:blogId", middleware.authenticate,blogcontroller.deleteBlogid)
 
 router.all("/*", (req, res) => { res.status(404).send({ status: false, message: "Endpoint is not correct" }) })
 

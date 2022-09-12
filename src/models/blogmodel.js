@@ -1,3 +1,4 @@
+const moment = require('moment');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -27,9 +28,10 @@ const BlogSchema = new mongoose.Schema({
 
     },
     isDeleted: { type: Boolean, default: false },
-    deletedAt : String,
     isPublished: { type: Boolean, default: true },
-    PublishedAt: String
+   
+    deletedAt :{ type :String , default : null},
+    PublishedAt: {type :String , default : moment().format("DD/MM/YYYY , h:mm:ss a")}
 
 }, { timestamps: true });
 module.exports = mongoose.model('Blog', BlogSchema)
