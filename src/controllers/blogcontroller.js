@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 const validfun = require("../validationfunction/validfun")
 const ObjectId = mongoose.Types.ObjectId
 
-// ====================================================||CREATE BLOG||======================================================
+// ==================================================||CREATE BLOG||=======================================================
 
 const createblogdocument = async function (req, res) {
     try {
@@ -83,10 +83,10 @@ const updateblog = async function (req, res) {
 
 const getallBlogs = async function (req, res) {
     try {
-        let obj = { isDeleted: false, isPublished: true }
         let { authorid, catagory, tags, subcategory } = req.query
+        let obj = { isDeleted: false, isPublished: true }
 
-        if (authorid != null) { obj.authorid = authorid }
+        if (authorid != null) { obj.authorId = authorid }
         if (catagory != null) { obj.catagory = catagory }
        
         if (tags != null) { obj.tags = tags }
