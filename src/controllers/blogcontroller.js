@@ -33,7 +33,7 @@ const createblogdocument = async function (req, res) {
         }
 
         let checkauthid = await authormodel.findById(authorId)
-        if (!checkauthid) return res.send({ status: false, msg: "Auther id is not valid" })
+        if (!checkauthid) return res.status(400).send({ status: false, msg: "Auther id is not valid" })
 
         const createbody = await blogmodel.create(req.body)
         res.status(201).send({ status: true, data: createbody })
@@ -98,7 +98,7 @@ const getallBlogs = async function (req, res) {
         if (savedData.length == 0) {
             return res.status(404).send({ status: false, msg: "no document found" })
         }
-        return res.status(404).send({ status: true, msg: savedData })
+        return res.status(200).send({ status: true, msg: savedData })
     }
     catch (err) {
         res.status(500).send({
@@ -143,7 +143,7 @@ const deleteBlogParam = async function (req, res) {
 
         if (updateddata.modifiedCount == 0) return res.status(404).send({ status: false, msg: "no document found" })
 
-        return res.status(404).send({ status: true, msg: updateddata })
+        return res.status(200).send({ status: true, msg: updateddata })
     }
     catch (err) {
         res.status(500).send({
@@ -163,7 +163,7 @@ const deleteBlogid = async function (req, res) {
         let id = req.params.blogId;
         let Blog = await blogmodel.findOne({ _id: id });
         if (!Blog) {
-            return res.status(400).send({ status: false, msg: "No such blog found" });
+            return res.status(404).send({ status: false, msg: "No such blog found" });
         }
 
         if (Blog.isDeleted == false) {
@@ -172,7 +172,7 @@ const deleteBlogid = async function (req, res) {
                 { isDeleted: true, deletedAt: moment().format("DD/MM/YYYY , h:mm:ss a") },
                 { new: true }
             );
-            return res.status(400).send({ status: true, msg: Update });
+            return res.status(200).send({ status: true, msg: Update });
 
         }
     }
