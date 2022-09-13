@@ -16,28 +16,28 @@ const createblogdocument = async function (req, res) {
 
         if (!ObjectId.isValid(authorId)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
 
-        if (!title) return res.send({ status: false, msg: "title is required" })
-        if (!body) return res.send({ status: false, msg: "body is required" })
-        if (!authorId) return res.send({ status: false, msg: "authorId is required" })
-        if (!category) return res.send({ status: false, msg: "category is required" })
+        if (!title) return res.status(400).send({ status: false, msg: "title is required" })
+        if (!body) return res.status(400).send({ status: false, msg: "body is required" })
+        if (!authorId) return res.status(400).send({ status: false, msg: "authorId is required" })
+        if (!category) return res.status(400).send({ status: false, msg: "category is required" })
 
-        if (typeof (title) !== "string") return res.send({ status: false, msg: "title must be string" })
-        if (typeof (body) !== "string") return res.send({ status: false, msg: "body must be string" })
-        if (typeof (category) !== "string") return res.send({ status: false, msg: "catagory must be string" })
+        if (typeof (title) !== "string") return res.status(400).send({ status: false, msg: "title must be string" })
+        if (typeof (body) !== "string") return res.status(400).send({ status: false, msg: "body must be string" })
+        if (typeof (category) !== "string") return res.status(400).send({ status: false, msg: "catagory must be string" })
 
 
         if (isDeleted) {
             if (typeof (isDeleted) !== "boolean")
-                return res.send({ status: false, msg: "is isDeleted must be boolean" })
+                return res.status(400).send({ status: false, msg: "is isDeleted must be boolean" })
         }
         let a = typeof (isPublished)
         if (isPublished) {
             if (a !== "boolean")
-                return res.send({ status: false, msg: "is Published must be boolean" })
+                return res.status(400).send({ status: false, msg: "is Published must be boolean" })
         }
 
         let checkauthid = await authormodel.findById(authorId)
-        if (!checkauthid) return res.status(400).send({ status: false, msg: "Auther id is not valid" })
+        if (!checkauthid) return res.status(401).send({ status: false, msg: "Auther id is not valid" })
 
         const createbody = await blogmodel.create(req.body)
         res.status(201).send({ status: true, data: createbody })
@@ -54,13 +54,14 @@ const updateblog = async function (req, res) {
     try {
 
         let blogId = req.params.blogId;
-        if (!blogId) return res.send("blogId is required")
+        if (!blogId) return res.status(400).send("blogId is required")
         let blogDetails = await blogmodel.findById(blogId);
         if (!blogDetails) {
-            return res.status(400).send({ status: false, msg: "no such blog is exist" });
+            return res.status(404).send({ status: false, msg: "no such blog is exist" });
         }
 
         validateobjid = mongoose.Types.ObjectId.isValid(blogId)
+
         let { title, body, tags, category, subcategory } = req.body;
 
 
@@ -146,7 +147,7 @@ const deleteBlogParam = async function (req, res) {
 
         if (updateddata.modifiedCount == 0) return res.status(404).send({ status: true, msg: "no document found" })
 
-        return res.status(200).send({ status: true, msg: "Data deleted successfully" })
+        return res.status(200).send({ status: true, msg: updateddata })
     }
     catch (err) {
         res.status(500).send({
@@ -175,13 +176,13 @@ const deleteBlogid = async function (req, res) {
                 { isDeleted: true, deletedAt: moment().format("DD/MM/YYYY , h:mm:ss a") },
                 { new: true }
             );
-            return res.status(200).send({ status: true, msg: "Data deleted successfully" });
+            return res.status(200).send({ status: true, msg: Update });
 
         }
     }
     catch (err) {
-
-        res.status(404).send({
+        
+        res.status(500).send({
             status: false,
             msg: err.message
         })
@@ -197,7 +198,7 @@ const loginUser = async function (req, res) {
         if (!email) return res.status(400).send({ status: false, message: "EmailId is mandatory" })
         if (!password) return res.status(400).send({ status: false, message: "Password is mandatory" })
         let authorCheck = await authormodel.findOne({ email: email, password: password });
-        if (!authorCheck) return res.status(400).send({ status: false, message: "EmailId or password is incorrect" })
+        if (!authorCheck) return res.status(401).send({ status: false, message: "EmailId or password is incorrect" })
         let token = jwt.sign(
             {
                 authorId: authorCheck._id,

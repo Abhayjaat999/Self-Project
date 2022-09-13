@@ -7,22 +7,22 @@ const createAuthors = async function (req, res) {
         let { email, password, title, fname, lname } = req.body
 
 
-        if (!fname) return res.send({ status: false, msg: "fname is required" })
-        if (!lname) return res.send({ status: false, msg: "lname is required" })
-        if (!title) return res.send({ status: false, msg: "title is required" })
-        if (!email) return res.send({ status: false, msg: "email is required" })
-        if (!password) return res.send({ status: false, msg: "password is required" })
+        if (!fname) return res.status(400).send({ status: false, msg: "fname is required" })
+        if (!lname) return res.status(400).send({ status: false, msg: "lname is required" })
+        if (!title) return res.status(400).send({ status: false, msg: "title is required" })
+        if (!email) return res.status(400).send({ status: false, msg: "email is required" })
+        if (!password) return res.status(400).send({ status: false, msg: "password is required" })
 
-        if (typeof (fname) !== "string") return res.send({ status: false, msg: "fname must be string" })
-        if (typeof (lname) !== "string") return res.send({ status: false, msg: "lname must be string" })
-        if (typeof (email) !== "string") return res.send({ status: false, msg: "email must be string" })
-        if (typeof (title) !== "string") return res.send({ status: false, msg: "title must be string" })
-        if (typeof (password) !== "string") return res.send({ status: false, msg: "password must be string" })
+        if (typeof (fname) !== "string") return res.status(400).send({ status: false, msg: "fname must be string" })
+        if (typeof (lname) !== "string") return res.status(400).send({ status: false, msg: "lname must be string" })
+        if (typeof (email) !== "string") return res.status(400).send({ status: false, msg: "email must be string" })
+        if (typeof (title) !== "string") return res.status(400).send({ status: false, msg: "title must be string" })
+        if (typeof (password) !== "string") return res.status(400).send({ status: false, msg: "password must be string" })
 
 
 
         let findemail = await authormodel.find({ email: email, password: password })
-        if (findemail.length > 0) return res.send({ status: false, msg: "User already exists" })
+        if (findemail.length > 0) return res.status(409).send({ status: false, msg: "User already exists" })
 
         if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
             return res.status(400).send({ msg: "email is invalid", status: false })

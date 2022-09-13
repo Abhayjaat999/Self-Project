@@ -10,8 +10,8 @@ const authenticate = function (req, res, next) {
 
         jwttoken.verify(token, "Blogging-Site", (error, decodedToken) => {
             if (error) {
-                if (error.message == "invalid token") return res.status(400).send({ status: false, msg: "token is not valid" })
-                return res.status(400).send({ status: false, msg: "incorrect token format" })
+                if (error.message == "invalid token") return res.status(401).send({ status: false, msg: "token is not valid" })
+                return res.status(403).send({ status: false, msg: "incorrect token format" })
             }
             req.decodedToken = decodedToken
         })
@@ -26,7 +26,7 @@ const authorise = async function (req, res, next) {
         let ObjectID = mongoose.Types.ObjectId
         if (req.query.authorid) {
             let authorId = req.query.authorid
-            if (!ObjectID.isValid(authorId)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
+            if (!ObjectID.isValid(authorId)) { return res.status(401).send({ status: false, message: "Not a valid AuthorID" }) }
             if (authorId !== req.decodedToken.authorId) {
                 return res.status(403).send({ status: false, message: "You are not a authorized user" })
             }
@@ -36,7 +36,7 @@ const authorise = async function (req, res, next) {
         if (req.params.blogId) {
             let blogId = req.params.blogId
 
-            if (!ObjectID.isValid(blogId)) { return res.status(400).send({ status: false, message: "Not a valid BlogID" }) }
+            if (!ObjectID.isValid(blogId)) { return res.status(401).send({ status: false, message: "Not a valid BlogID" }) }
             let check = await blogmodel.findById(blogId)
             if (!check) { return res.status(404).send({ status: false, message: "No such blog exists" }) }
 
