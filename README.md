@@ -58,7 +58,7 @@ Plutonium
    - List of blogs that have a specific tag
    - List of blogs that have a specific subcategory example of a query url: blogs?filtername=filtervalue&f2=fv2
                                 
-                                PUT /blogs/:blogId
+                                PUT /blogs
 
 * Updates a blog by changing the its title, body, adding tags, adding a subcategory. (Assuming tag and subcategory received in body is need to be added)
 * Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
